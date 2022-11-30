@@ -20,7 +20,7 @@ A simple, highly scalable and open source song list web page
 - [ ] Show playlist
 - [ ] Category screening
 - [ ] Fuzzy search
-- [ ] Background management (add/delete)
+- [ ] Background management (add / delete)
 - [ ] Access instant messaging bot
 
 
