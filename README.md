@@ -9,8 +9,8 @@ A simple, highly scalable and open source song list web page
 </div>
 
 <div align=center>
-  Developed for 
-  <a href="https://live.bilibili.com/362064" target="_blank"> 
+  Developed for
+  <a href="https://space.bilibili.com/13630808/" target="_blank" rel="external"> 
     顾疚疚
   </a>
   关注顾疚疚喵，关注顾疚疚谢谢喵
