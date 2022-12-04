@@ -17,9 +17,9 @@ A simple, highly scalable and open source song list web page
 </div>
 
 ## Feature
-- [ ] Show playlist
-- [ ] Category screening
-- [ ] Fuzzy search
+- [x] Show playlist
+- [x] Category screening
+- [x] Fuzzy search
 - [ ] Background management (add / delete)
 - [ ] Access instant messaging bot
 
