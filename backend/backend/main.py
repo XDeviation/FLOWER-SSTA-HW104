@@ -18,10 +18,6 @@ app.add_middleware(
 
 app.include_router(songlist.router)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
 def main():
     uvicorn.run(
         "main:app",
