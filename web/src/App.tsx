@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import type { NotificationPlacement } from "antd/es/notification/interface";
 import {
@@ -9,6 +9,9 @@ import {
   Input,
   Divider,
   notification,
+  Modal,
+  Alert,
+  InputRef,
 } from "antd";
 const { Footer, Content } = Layout;
 
@@ -27,12 +30,30 @@ const App: React.FC = () => {
   const [filterSongs, setFliterSongs] = useState<Song[]>();
   const [filterString, setFliterString] = useState<string>("");
   const [columns, setColumns] = useState<ColumnsType<Song>>([]);
+  const [clipboardText, setClipboardText] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const inputRef = useRef<InputRef>(null);
+
+  const openModel = () => {
+    setIsModalOpen(true);
+    setTimeout(() => {
+      inputRef.current && inputRef.current.focus();
+    }, 100);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("http://43.142.122.48/api/songlist", {
+        const response = await fetch("http://www.gujiujiu.icu/api/songlist", {
           method: "GET",
         });
 
@@ -198,17 +219,29 @@ const App: React.FC = () => {
                 } else {
                   selectSong = filterSongs[randomIndex];
                 }
-                await navigator.clipboard.writeText(`点歌 ${selectSong.name}`);
+                setClipboardText(`点歌 ${selectSong.name}`);
+
                 let comment = "";
                 if (selectSong.comment) {
                   comment = `注意，这首歌是 ${selectSong.comment} 哦！`;
                 }
+
+                const permissionName = "clipboard-write" as PermissionName;
+                const { state } = await navigator.permissions.query({
+                  name: permissionName,
+                });
+
+                if (state === "denied") {
+                  throw "no permission";
+                }
+                await navigator.clipboard.writeText(`点歌 ${selectSong.name}`);
+
                 openNotification(
                   `你抽中了 ${selectSong.name} , 已经成功复制到剪贴板，快去直播间点歌吧！${comment}`
                 );
               } catch (err) {
+                openModel();
                 console.log(err);
-                openNotification(err as string);
               }
             }}
           >
@@ -291,11 +324,23 @@ const App: React.FC = () => {
               return {
                 onClick: async (event) => {
                   try {
+                    setClipboardText(`点歌 ${record.name}`);
+
+                    const permissionName = "clipboard-write" as PermissionName;
+                    const { state } = await navigator.permissions.query({
+                      name: permissionName,
+                    });
+                    if (state === "denied") {
+                      throw "no permission";
+                    }
+
                     await navigator.clipboard.writeText(`点歌 ${record.name}`);
                     openNotification(
                       `你选择了 ${record.name} ，已经成功复制到剪贴板，快去直播间点歌吧！`
                     );
-                  } catch (err) {}
+                  } catch (err) {
+                    openModel();
+                  }
                 },
               };
             }}
@@ -311,6 +356,27 @@ const App: React.FC = () => {
             Copyright © 2022 GuJiuJiu. All rights reserved.
           </Divider>
         </Footer>
+        <Modal
+          open={isModalOpen}
+          onOk={handleOk}
+          footer={null}
+          closable={false}
+          onCancel={handleCancel}
+        >
+          <Alert
+            description="浏览器拒绝了河豚的复制请求，请手动复制并到直播间点歌~"
+            type="warning"
+            showIcon
+          />
+          <Input
+            ref={inputRef}
+            onFocus={() => {
+              inputRef.current && inputRef.current.select();
+            }}
+            style={{ marginTop: "12px" }}
+            value={clipboardText}
+          ></Input>
+        </Modal>
       </ConfigProvider>
     </div>
   );
