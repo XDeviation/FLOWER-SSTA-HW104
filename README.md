@@ -1,6 +1,6 @@
 # FLOWER-SSTA-HW104
 
-A simple, highly scalable and open source song list web page
+A simple, highly scalable (maybe) and open source song list web page
 
 ---
 
