@@ -160,6 +160,7 @@ const App: React.FC = () => {
         setFliterSongs(totalSongs);
         return;
       }
+      setIsLoading(true);
       const filterStringLower = filterString.toLowerCase();
       const tmp = totalSongs.filter((song: Song) => {
         for (const value of Object.values(song)) {
@@ -170,6 +171,7 @@ const App: React.FC = () => {
         return false;
       });
       setFliterSongs(tmp);
+      setIsLoading(false);
     }, 200);
 
     return () => clearTimeout(timer);
@@ -319,7 +321,9 @@ const App: React.FC = () => {
             pagination={false}
             loading={isLoading}
             scroll={{ x: true }}
-            rowKey={(record: Song) => record.name}
+            rowKey={(record: Song) =>
+              `${record.name}-${record.singer}-${record.comment}`
+            }
             onRow={(record: Song) => {
               return {
                 onClick: async (event) => {
@@ -353,7 +357,16 @@ const App: React.FC = () => {
               marginTop: "1%",
             }}
           >
-            Copyright © 2022 GuJiuJiu. All rights reserved.
+            Copyright © 2022 GuJiuJiu. All rights reserved.{" "}
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              style={{
+                color: "black",
+              }}
+            >
+              鲁ICP备2022041736号-1
+            </a>
           </Divider>
         </Footer>
         <Modal
