@@ -12,6 +12,7 @@ import {
   Modal,
   Alert,
   InputRef,
+  Select,
 } from "antd";
 const { Footer, Content } = Layout;
 
@@ -24,6 +25,11 @@ type Song = {
   comment: string;
 };
 
+type LanguageType = {
+  type: string | undefined;
+  language: string | undefined;
+};
+
 const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [totalSongs, setTotalSongs] = useState<Song[]>();
@@ -31,6 +37,8 @@ const App: React.FC = () => {
   const [filterString, setFliterString] = useState<string>("");
   const [columns, setColumns] = useState<ColumnsType<Song>>([]);
   const [clipboardText, setClipboardText] = useState<string>("");
+  const [languageType, setLanguageType] = useState<LanguageType[]>([]);
+  const [selectType, setSelectType] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const inputRef = useRef<InputRef>(null);
 
@@ -62,86 +70,94 @@ const App: React.FC = () => {
         }
 
         const { data } = await response.json();
-        const typeSet = new Set();
-        const singerSet = new Set();
-        const languageSet = new Set();
-        const firstLetterSet = new Set();
+
+        const languageTypeSet = new Set();
         data.forEach((song: Song) => {
-          typeSet.add(song.type);
-          singerSet.add(song.singer);
-          languageSet.add(song.language.trim());
-          firstLetterSet.add(song.first_letter.toUpperCase());
+          languageTypeSet.add(
+            song.language + (song.type ? `-${song.type}` : "")
+          );
         });
-        const typeArray = Array.from(typeSet) as string[];
-        const singerArray = Array.from(singerSet) as string[];
-        const languageArray = Array.from(languageSet) as string[];
-        const firstLetterArray = Array.from(firstLetterSet) as string[];
-        firstLetterArray.sort((a: string, b: string) =>
-          ("" + a).localeCompare(b)
-        );
+        const languageTypeArray = Array.from(languageTypeSet) as string[];
+        const tmpLanguageType = [
+          { language: undefined, type: undefined },
+        ] as LanguageType[];
+        languageTypeArray.forEach((val: string) => {
+          const tmp = val.split("-");
+          tmpLanguageType.push({
+            language: tmp[0],
+            type: tmp[1] || undefined,
+          });
+        });
+        setLanguageType(tmpLanguageType);
+        // const typeSet = new Set();
+        // const singerSet = new Set();
+        // const languageSet = new Set();
+        // const firstLetterSet = new Set();
+        // data.forEach((song: Song) => {
+        //   typeSet.add(song.type);
+        //   singerSet.add(song.singer);
+        //   languageSet.add(song.language.trim());
+        //   firstLetterSet.add(song.first_letter.toUpperCase());
+        // });
+        // const typeArray = Array.from(typeSet) as string[];
+        // const singerArray = Array.from(singerSet) as string[];
+        // const languageArray = Array.from(languageSet) as string[];
+        // const firstLetterArray = Array.from(firstLetterSet) as string[];
+        // firstLetterArray.sort((a: string, b: string) =>
+        //   ("" + a).localeCompare(b)
+        // );
+
         setColumns([
           {
             title: "曲名",
             dataIndex: "name",
             key: "name",
             render: (text) => <a>{text}</a>,
-            sorter: (a, b) => ("" + a.name).localeCompare(b.name),
-            filters: firstLetterArray.map((value) => ({
-              value,
-              text: value,
-            })),
-            filterSearch: true,
-            onFilter: (value: string | number | boolean, record) =>
-              record.first_letter === value.toString(),
+            // sorter: (a, b) => ("" + a.name).localeCompare(b.name),
+            // filters: firstLetterArray.map((value) => ({
+            //   value,
+            //   text: value,
+            // })),
+            // filterSearch: true,
+            // onFilter: (value: string | number | boolean, record) =>
+            //   record.first_letter === value.toString(),
           },
           {
             title: "歌手",
             dataIndex: "singer",
             key: "singer",
             render: (text) => <a>{text}</a>,
-            sorter: (a, b) => ("" + a.singer).localeCompare(b.singer),
-            filters: singerArray.map((value) => ({
-              value,
-              text: value,
-            })),
-            filterSearch: true,
-            onFilter: (value: string | number | boolean, record) =>
-              record.singer === value.toString(),
+            // sorter: (a, b) => ("" + a.singer).localeCompare(b.singer),
+            // filters: singerArray.map((value) => ({
+            //   value,
+            //   text: value,
+            // })),
+            // filterSearch: true,
+            // onFilter: (value: string | number | boolean, record) =>
+            //   record.singer === value.toString(),
           },
           {
-            title: "语言",
+            title: "语言和曲风",
             dataIndex: "language",
             key: "language",
-            render: (text) => <a>{text}</a>,
-            sorter: (a, b) => ("" + a.language).localeCompare(b.language),
-            filters: languageArray.map((value) => ({
-              value,
-              text: value,
-            })),
-            filterSearch: true,
-            onFilter: (value: string | number | boolean, record) =>
-              record.language === value.toString(),
-          },
-          {
-            title: "类型",
-            dataIndex: "type",
-            key: "type",
-            render: (text) => <a>{text}</a>,
-            sorter: (a, b) => ("" + a.type).localeCompare(b.type),
-            filters: typeArray.map((value) => ({
-              value,
-              text: value,
-            })),
-            filterSearch: true,
-            onFilter: (value: string | number | boolean, record) =>
-              record.type === value.toString(),
+            render: (text, record: Song) => (
+              <a>{record.type ? record.type : record.language}</a>
+            ),
+            // sorter: (a, b) => ("" + a.type).localeCompare(b.type),
+            // filters: languageArray.map((value) => ({
+            //   value,
+            //   text: value,
+            // })),
+            // filterSearch: true,
+            // onFilter: (value: string | number | boolean, record) =>
+            //   record.language === value.toString(),
           },
           {
             title: "备注",
             dataIndex: "comment",
             key: "comment",
             render: (text) => <a>{text}</a>,
-            sorter: (a, b) => ("" + a.comment).localeCompare(b.comment),
+            // sorter: (a, b) => ("" + a.comment).localeCompare(b.comment),
           },
         ]);
         setTotalSongs(data);
@@ -156,13 +172,19 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!totalSongs || !filterString || filterString.length === 0) {
+      if (
+        !totalSongs ||
+        ((!filterString || filterString.length === 0) && !selectType)
+      ) {
         setFliterSongs(totalSongs);
         return;
       }
       setIsLoading(true);
       const filterStringLower = filterString.toLowerCase();
+      const { language, type } = languageType[selectType];
       const tmp = totalSongs.filter((song: Song) => {
+        if (language && song.language !== language) return false;
+        if (type && song.type !== type) return false;
         for (const value of Object.values(song)) {
           if (value.toLowerCase().indexOf(filterStringLower) !== -1) {
             return true;
@@ -175,7 +197,8 @@ const App: React.FC = () => {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [totalSongs, filterString]);
+  }, [totalSongs, filterString, selectType, languageType]);
+
   const [api, contextHolder] = notification.useNotification();
   const openNotification = (
     message: string,
@@ -189,96 +212,74 @@ const App: React.FC = () => {
 
   const randerHeader = () => {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: "5%",
-          marginBottom: "5%",
-          alignItems: "center",
-        }}
-      >
+      <div>
+        <div style={{ marginTop: "5%" }}>
+          <img
+            style={{ borderRadius: "50%" }}
+            alt="avatar"
+            width="200"
+            height="200"
+            src="./avatar.webp"
+          ></img>
+        </div>
+
         <div
           style={{
-            marginRight: "10%",
-            display: "grid",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <Button
-            ghost
-            onClick={async () => {
-              try {
-                let selectSong = {} as Song;
-                const randomIndex = Math.floor(
-                  Math.random() *
-                    (filterSongs?.length || totalSongs?.length || 0)
-                );
-                if (!filterSongs) {
-                  if (!totalSongs) {
-                    return;
-                  }
-                  selectSong = totalSongs[randomIndex];
-                } else {
-                  selectSong = filterSongs[randomIndex];
-                }
-                setClipboardText(`点歌 ${selectSong.name}`);
-
-                let comment = "";
-                if (selectSong.comment) {
-                  comment = `注意，这首歌是 ${selectSong.comment} 哦！`;
-                }
-
-                const permissionName = "clipboard-write" as PermissionName;
-                const { state } = await navigator.permissions.query({
-                  name: permissionName,
-                });
-
-                if (state === "denied") {
-                  throw "no permission";
-                }
-                await navigator.clipboard.writeText(`点歌 ${selectSong.name}`);
-
-                openNotification(
-                  `你抽中了 ${selectSong.name} , 已经成功复制到剪贴板，快去直播间点歌吧！${comment}`
-                );
-              } catch (err) {
-                openModel();
-                console.log(err);
-              }
-            }}
-          >
-            盲盒点歌
-          </Button>
-
-          {/* <a
-            target="_blank"
+          <div
             style={{
-              marginTop: "20%",
+              color: "#e6b49c",
+              display: "grid",
             }}
-            href="https://live.bilibili.com/362064"
-            rel="noreferrer"
           >
-            <Button ghost>进入 BILIBILI 首页</Button>
-          </a> */}
-
-          <a
-            style={{
-              marginTop: "20%",
-            }}
-            target="_blank"
-            href="https://live.bilibili.com/362064"
-            rel="noreferrer"
-          >
-            <Button ghost>进入 BILIBILI 直播间</Button>
-          </a>
+            <h1>顾疚疚的歌单</h1>
+          </div>
         </div>
-        <img
-          style={{ borderRadius: "50%" }}
-          alt="avatar"
-          width="200"
-          height="200"
-          src="./avatar.webp"
-        ></img>
+
+        <div
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+            }}
+          >
+            <a
+              target="_blank"
+              href="https://live.bilibili.com/362064"
+              rel="noreferrer"
+            >
+              <Button ghost>
+                {/* <img src="/bilibili_logo.png" alt="bilibili logo" /> */}
+                前往疚宝的直播间
+              </Button>
+            </a>
+          </div>
+
+          <div
+            style={{
+              justifyContent: "center",
+              marginBottom: "5%",
+              alignItems: "center",
+            }}
+          >
+            <div
+              style={{
+                color: "#424249",
+                display: "grid",
+                marginTop: "1%",
+              }}
+            >
+              <span>轻点歌名可以复制哦</span>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
@@ -300,17 +301,85 @@ const App: React.FC = () => {
           }}
         >
           {randerHeader()}
-          <Input
+          <div
             style={{
-              opacity: 0.85,
               marginTop: "1%",
+              display: "flex",
+              justifyContent: "space-between",
             }}
-            value={filterString}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const { value: inputValue } = e.target;
-              setFliterString(inputValue);
-            }}
-          ></Input>
+          >
+            <Select
+              style={{ width: "20%", opacity: 0.85 }}
+              value={selectType}
+              onChange={(e) => {
+                setSelectType(e);
+              }}
+              options={languageType.map((value, index) => {
+                const { language, type } = value;
+                if (!language && !type)
+                  return { label: "所有语言和曲风", value: index };
+                if (!type) return { label: language, value: index };
+                return { label: `${language}-${type}`, value: index };
+              })}
+            ></Select>
+            <Input
+              style={{ width: "55%", opacity: 0.85 }}
+              value={filterString}
+              placeholder="搜索"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const { value: inputValue } = e.target;
+                setFliterString(inputValue);
+              }}
+            ></Input>
+            <Button
+              style={{ width: "20%", opacity: 0.85 }}
+              onClick={async () => {
+                try {
+                  let selectSong = {} as Song;
+                  const randomIndex = Math.floor(
+                    Math.random() *
+                      (filterSongs?.length || totalSongs?.length || 0)
+                  );
+                  if (!filterSongs) {
+                    if (!totalSongs) {
+                      return;
+                    }
+                    selectSong = totalSongs[randomIndex];
+                  } else {
+                    selectSong = filterSongs[randomIndex];
+                  }
+                  setClipboardText(`点歌 ${selectSong.name}`);
+
+                  let comment = "";
+                  if (selectSong.comment) {
+                    comment = `注意，这首歌是 ${selectSong.comment} 哦！`;
+                  }
+
+                  const permissionName = "clipboard-write" as PermissionName;
+                  const { state } = await navigator.permissions.query({
+                    name: permissionName,
+                  });
+
+                  if (state === "denied") {
+                    throw "no permission";
+                  }
+                  await navigator.clipboard.writeText(
+                    `点歌 ${selectSong.name}`
+                  );
+
+                  openNotification(
+                    `你抽中了 ${selectSong.name} , 已经成功复制到剪贴板，快去直播间点歌吧！${comment}`
+                  );
+                } catch (err) {
+                  openModel();
+                  console.log(err);
+                }
+              }}
+            >
+              盲盒点歌
+            </Button>
+          </div>
+
           <Table
             style={{
               opacity: 0.85,

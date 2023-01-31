@@ -11,7 +11,7 @@ SONG_LIST_FILE_PATH = './data/songlist.csv'
 @router.get("/songlist", response_model=SongList)
 async def get_song_list():
     res = []
-    with open(SONG_LIST_FILE_PATH, mode='r', encoding='utf-8') as csvfile:
+    with open(SONG_LIST_FILE_PATH, mode='r', encoding='utf-8', newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',')
         for row in spamreader:
             language, song_type, name, singer, comment = row
@@ -27,4 +27,5 @@ async def get_song_list():
                 "comment": comment,
                 "first_letter": first_letter,
             })
+    res.pop(0)
     return {"data": res}
