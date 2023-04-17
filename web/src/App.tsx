@@ -61,7 +61,7 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch("http://www.gujiujiu.icu/api/songlist", {
+        const response = await fetch("https://www.gujiujiu.icu/api/songlist", {
           method: "GET",
         });
 
@@ -236,6 +236,7 @@ const App: React.FC = () => {
             }}
           >
             <h1>顾疚疚的歌单</h1>
+            <h1>和她拿手的{totalSongs?.length || 0}首歌</h1>
           </div>
         </div>
 
