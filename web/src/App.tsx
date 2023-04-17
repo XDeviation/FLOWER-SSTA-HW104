@@ -13,6 +13,7 @@ import {
   Alert,
   InputRef,
   Select,
+  Card,
 } from "antd";
 const { Footer, Content } = Layout;
 
@@ -233,10 +234,17 @@ const App: React.FC = () => {
             style={{
               color: "#e6b49c",
               display: "grid",
+              margin: 8,
             }}
           >
-            <h1>顾疚疚的歌单</h1>
-            <h1>和她拿手的{totalSongs?.length || 0}首歌</h1>
+            <h1 style={{ margin: 0 }}>顾疚疚</h1>
+            <h1
+              style={{
+                margin: 0,
+              }}
+            >
+              和她拿手的{totalSongs?.length || 0}首歌
+            </h1>
           </div>
         </div>
 
@@ -279,6 +287,20 @@ const App: React.FC = () => {
             >
               <span>轻点歌名可以复制哦</span>
             </div>
+          </div>
+
+          <div
+            style={{
+              justifyContent: "center",
+              marginBottom: "5%",
+              alignItems: "center",
+            }}
+          >
+            <Card title="Card title" bordered={false}>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
+            </Card>
           </div>
         </div>
       </div>
