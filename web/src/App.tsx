@@ -294,7 +294,7 @@ const App: React.FC = () => {
                     textDecoration: "none",
                   }}
                   target="_blank"
-                  href="https://live.bilibili.com/362064"
+                  href="https://space.bilibili.com/13630808/"
                   rel="noreferrer"
                 >
                   <div>
