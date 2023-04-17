@@ -256,50 +256,128 @@ const App: React.FC = () => {
         >
           <div
             style={{
-              display: "grid",
-            }}
-          >
-            <a
-              target="_blank"
-              href="https://live.bilibili.com/362064"
-              rel="noreferrer"
-            >
-              <Button ghost>
-                {/* <img src="/bilibili_logo.png" alt="bilibili logo" /> */}
-                前往疚宝的直播间
-              </Button>
-            </a>
-          </div>
-
-          <div
-            style={{
               justifyContent: "center",
-              marginBottom: "5%",
+              marginBottom: "16px",
               alignItems: "center",
             }}
           >
             <div
               style={{
-                color: "#424249",
-                display: "grid",
-                marginTop: "1%",
+                display: "flex",
               }}
             >
-              <span>轻点歌名可以复制哦</span>
+              <div>
+                <a
+                  style={{
+                    textDecoration: "none",
+                  }}
+                  target="_blank"
+                  href="https://live.bilibili.com/362064"
+                  rel="noreferrer"
+                >
+                  <div>
+                    <img
+                      style={{ borderRadius: "50%" }}
+                      alt="avatar"
+                      width="50"
+                      height="50"
+                      src="./bilibili_logo_padded.png"
+                    ></img>
+                  </div>
+                  <span>去直播间</span>
+                </a>
+              </div>
+              <span style={{ flex: 1 }}>轻点歌名可以复制哦</span>
+              <div>
+                <a
+                  style={{
+                    textDecoration: "none",
+                  }}
+                  target="_blank"
+                  href="https://live.bilibili.com/362064"
+                  rel="noreferrer"
+                >
+                  <div>
+                    <img
+                      style={{ borderRadius: "50%" }}
+                      alt="avatar"
+                      width="50"
+                      height="50"
+                      src="./bilibili_logo_padded.png"
+                    ></img>
+                  </div>
+                  <span
+                    style={{
+                      color: "bisque",
+                    }}
+                  >
+                    去首页
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
 
           <div
             style={{
               justifyContent: "center",
-              marginBottom: "5%",
+              marginBottom: "16px",
               alignItems: "center",
+              opacity: 0.85,
             }}
           >
-            <Card title="Card title" bordered={false}>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
+            <Card bordered={false}>
+              <div>
+                <span> 挑个想听的类别呗~</span>
+              </div>
+              <div
+                style={{
+                  marginTop: "8px",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <Button
+                  style={{ width: "20%" }}
+                  onClick={() => {
+                    filterString === "国语"
+                      ? setFliterString("")
+                      : setFliterString("国语");
+                  }}
+                >
+                  国语
+                </Button>
+                <Button
+                  style={{ width: "20%" }}
+                  onClick={() => {
+                    filterString === "英语"
+                      ? setFliterString("")
+                      : setFliterString("英语");
+                  }}
+                >
+                  英语
+                </Button>
+                <Button
+                  style={{ width: "20%" }}
+                  onClick={() => {
+                    filterString === "日语"
+                      ? setFliterString("")
+                      : setFliterString("日语");
+                  }}
+                >
+                  日语
+                </Button>
+                <Button
+                  style={{ width: "20%" }}
+                  onClick={() => {
+                    filterString === "sc"
+                      ? setFliterString("")
+                      : setFliterString("sc");
+                  }}
+                >
+                  付费
+                </Button>
+              </div>
             </Card>
           </div>
         </div>
@@ -331,7 +409,7 @@ const App: React.FC = () => {
               justifyContent: "space-between",
             }}
           >
-            <Select
+            {/* <Select
               style={{ width: "20%", opacity: 0.85 }}
               value={selectType}
               onChange={(e) => {
@@ -344,9 +422,9 @@ const App: React.FC = () => {
                 if (!type) return { label: language, value: index };
                 return { label: `${language}-${type}`, value: index };
               })}
-            ></Select>
+            ></Select> */}
             <Input
-              style={{ width: "55%", opacity: 0.85 }}
+              style={{ width: "78%", opacity: 0.85 }}
               value={filterString}
               placeholder="搜索"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
