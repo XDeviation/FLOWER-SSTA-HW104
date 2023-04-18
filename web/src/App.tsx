@@ -243,7 +243,7 @@ const App: React.FC = () => {
                 margin: 0,
               }}
             >
-              和她拿手的{totalSongs?.length || 0}首歌
+              和她不太拿手的{totalSongs?.length || 0}首歌
             </h1>
           </div>
         </div>
